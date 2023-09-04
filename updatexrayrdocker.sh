@@ -17,12 +17,19 @@ do
 
     echo "正在删除容器: $container"
     docker rm $container
-
-    echo "启动新的 xrayr 容器"
-    docker run -d --name xrayr ghcr.io/xrayr-project/xrayr:master
-
-    echo "容器 $container 已更新完成"
 done
+
+# 删除旧的 xrayr 镜像
+old_images=$(docker images | grep "ghcr.io/xrayr-project/xrayr" | awk '{print $3}')
+for image in $old_images
+do
+    docker rmi $image
+done
+
+# 启动新的 xrayr 容器
+docker run -d --name xrayr ghcr.io/xrayr-project/xrayr:master
+
+echo "所有 xrayr 容器已更新到最新版本"
 
 # 显示所有容器的状态
 docker ps -a
