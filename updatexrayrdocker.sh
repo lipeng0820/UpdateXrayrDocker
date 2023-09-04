@@ -3,6 +3,15 @@
 # 切换到用户的主目录
 cd ~
 
+# 获取所有 xrayr 的镜像ID
+xrayr_images=$(docker images | grep "ghcr.io/xrayr-project/xrayr" | awk '{print $3}')
+
+# 删除这些镜像
+for image in $xrayr_images
+do
+    docker rmi $image
+done
+
 # 拉取最新的 xrayr master 版本
 docker pull ghcr.io/xrayr-project/xrayr:master
 
@@ -17,13 +26,6 @@ do
 
     echo "正在删除容器: $container"
     docker rm $container
-done
-
-# 删除旧的 xrayr 镜像
-old_images=$(docker images | grep "ghcr.io/xrayr-project/xrayr" | awk '{print $3}')
-for image in $old_images
-do
-    docker rmi $image
 done
 
 # 启动新的 xrayr 容器
